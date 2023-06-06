@@ -35,7 +35,7 @@ int addWord(char** cache, char* word, int cacheSize) {
     *(cache + index) = (char*)calloc(strlen(word) + 1, sizeof(char));
     allocType = "calloc";
   } else if (strlen(*(cache + index)) != strlen(word)) {
-    *(cache + index) = (char*)realloc(*(cache + index), strlen(word) + 1);
+    *(cache + index) = (char*)realloc(*(cache + index), strlen(word) + 2);
 
     allocType = "realloc";
   }
@@ -52,7 +52,7 @@ int readInFile(char** cache, char* fileName, int cacheSize) {
   }
 
   char* word = (char*)calloc(128, sizeof(char));
-  char* wordPtr = word;
+  char* wordPtr;
   int c;
 
   while ((c = fgetc(file)) != EOF) {
@@ -60,15 +60,20 @@ int readInFile(char** cache, char* fileName, int cacheSize) {
       wordPtr = word;
       *wordPtr++ = c;
       while ((c = fgetc(file)) != EOF && isalpha(c) &&
-             wordPtr < word + sizeof(word) - 1) {
+             wordPtr < word + 128 - 1) {
         *wordPtr++ = c;
       }
       *wordPtr = '\0';
+
       addWord(cache, word, cacheSize);
+
+      // resetting wordPtr to start of word for the next word
+      wordPtr = word;
     }
   }
 
   fclose(file);
+  free(word);
   return 1;
 }
 
@@ -77,7 +82,7 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Incorrect arguments provided\n");
   }
   int cacheSize = atoi(*(argv + 1));
-  if (cacheSize == 0 && *argv != '0') {
+  if (cacheSize == 0 && *(*(argv + 1)) != '0') {
     fprintf(stderr, "Invalid size\n");
   }
   char* fileName = *(argv + 2);
