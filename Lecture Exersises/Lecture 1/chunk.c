@@ -32,10 +32,11 @@ int chunk(int num, char* filename) {
     printf("%s", buffer);
   }
   printf("\n");
+  close(file);
   return 0;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char** argv) {
   // Check if there are enough command line arguments
   if (argc < 3) {
     printf("Two arguments are needed: a file name and an integer\n");
