@@ -79,4 +79,11 @@ int main(int argc, char** argv) {
   char* fileName = *(argv + 2);
   char** cache = (char**)calloc(cacheSize, sizeof(char*));
   readInFile(cache, fileName, cacheSize);
+  printf("\nCache:\n");
+  for (int i = 0; i < cacheSize; ++i) {
+    if (*(cache + i) == NULL) continue;
+    printf("index %d ==> \"%s\"\n", i, *(cache + i));
+    free(*(cache + i));
+  }
+  free(cache);
 }
